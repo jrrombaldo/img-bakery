@@ -23,4 +23,5 @@ script:
     docker push $CONTAINER
     docker logout
     wget https://raw.githubusercontent.com/jrrombaldo/containers/master/update_dockerhub_desc.sh
-    sh ./update_dockerhub_desc.sh
+    chmod +x ./update_dockerhub_desc.sh
+    ./update_dockerhub_desc.sh

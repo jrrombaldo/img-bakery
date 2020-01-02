@@ -19,9 +19,17 @@ script:
   - echo "BUILDING $CONTAINER"
   - | 
     docker build -t $CONTAINER .
+<<<<<<< HEAD
+=======
+    docker build -t $CONTAINER .
+>>>>>>> 3b41383a2c74ad895d19c7d1b683aecaa74bdfea
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
     docker push $CONTAINER
     docker logout
     wget https://raw.githubusercontent.com/jrrombaldo/containers/master/update_dockerhub_desc.sh
+<<<<<<< HEAD
   
     sh ./update_dockerhub_desc.sh
+=======
+    ./update_dockerhub_desc.sh
+>>>>>>> 3b41383a2c74ad895d19c7d1b683aecaa74bdfea

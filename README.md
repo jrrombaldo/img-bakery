@@ -1,4 +1,5 @@
 # IMG Bakery
+[![Build Status](https://travis-ci.org/jrrombaldo/img-bakery.svg?branch=master)](https://travis-ci.org/jrrombaldo/img-bakery)
 
 The `IMG Bakery` takes and operating system image URL, download and produce a new image with the given customisations. It has been tested with different versions/flavours of Raspbian and Ubunutu; however, it should work with UNIX based OS. 
 

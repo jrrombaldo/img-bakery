@@ -1,20 +1,26 @@
 dist: bionic
+
+language: bash
+
 services:
 - docker
-language: bash
+
+addons:
+    apt:
+      packages:
+      - wget
+
 env:
     global:
-        - IMG_NAME="jrromb/img-bakery"
-
+        - CONTAINER="jrromb/img-bakery"
 
 script:
   - set -e # less forgiving
   - echo "BUILDING $CONTAINER"
   - | 
-    docker build -t $IMG_NAME .
-    docker build -t $CONTAINER:latest .
+    docker build -t $CONTAINER .
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push $CONTAINER:latest
+    docker push $CONTAINER
     docker logout
     wget https://raw.githubusercontent.com/jrrombaldo/containers/master/update_dockerhub_desc.sh
-    export CONTAINER=${IMG_NAME} && ./update_dockerhub_desc.sh
+    ./update_dockerhub_desc.sh

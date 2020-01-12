@@ -8,7 +8,7 @@ jobs:
     
     env:
       IMG_NAME: "jrromb/img-bakery" 
-      IMG_TAG: ${date +'%Y%m%d-%H%M'}
+      IMG_TAG: ${{date +'%Y%m%d-%H%M'}}
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 

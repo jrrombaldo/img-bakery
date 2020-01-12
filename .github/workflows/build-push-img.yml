@@ -2,8 +2,6 @@ name: Build & Push
 
 on: [push]
 
-
-
 jobs:
   build and Push:
     runs-on: ubuntu-latest
@@ -17,18 +15,4 @@ jobs:
     - name: Build Docker Image
       run: |
         docker build . --file Dockerfile --tag $IMG_NAME:$(date +'%Y%m%d-%H%M')
-
-    - name: Push to Docker Registry
-    - run: |
-        docker build -t $CONTAINER .
-        docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-        docker push $CONTAINER
-        docker logout
-
-    - name: Update DockerHub Description
-    - run: |
-        wget https://raw.githubusercontent.com/jrrombaldo/containers/master/update_dockerhub_desc.sh
-        chmod +x ./update_dockerhub_desc.sh
-        ./update_dockerhub_desc.sh
-
 

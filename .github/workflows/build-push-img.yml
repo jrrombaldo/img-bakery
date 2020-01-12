@@ -2,10 +2,12 @@ name: Build & Push
 
 on: [push]
 
+env:
+  IMG_NAME: "jrromb/img-bakery" 
+  IMG_TAG: $(date +'%Y%m%d-%H%M')
+
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -17,3 +19,18 @@ jobs:
       env:
         IMG_NAME: "jrromb/img-bakery" 
         IMG_TAG: $(date +'%Y%m%d-%H%M')
+
+    - name: Push to Docker Registry
+    - run: |
+        docker build -t $CONTAINER .
+        docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+        docker push $CONTAINER
+        docker logout
+
+    - name: Update DockerHub Description
+    - run: |
+        wget https://raw.githubusercontent.com/jrrombaldo/containers/master/update_dockerhub_desc.sh
+        chmod +x ./update_dockerhub_desc.sh
+        ./update_dockerhub_desc.sh
+
+

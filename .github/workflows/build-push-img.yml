@@ -9,26 +9,29 @@ jobs:
     env:
       IMG_NAME: "jrromb/img-bakery" 
       IMG_TAG: $(date +'%Y%m%d-%H%M')
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
     steps:
     - uses: actions/checkout@v1
-    - name: Build Docker Image
-      run: |
-        docker build . --file Dockerfile --tag $IMG_NAME:$(date +'%Y%m%d-%H%M')
+
+    # - name: Build Docker Image
+    #   run: |
+    #     docker build . --file Dockerfile --tag $IMG_NAME:$(date +'%Y%m%d-%H%M')
         
     - name: Push to Docker Registry
       run: |
         docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-        docker push $IMG_NAME
+        # docker push $IMG_NAME
         docker logout
         
-    - name: Update DockerHub Description
-      run: |
-        wget https://raw.githubusercontent.com/jrrombaldo/containers/master/update_dockerhub_desc.sh
-        chmod +x ./update_dockerhub_desc.sh
-        ./update_dockerhub_desc.sh
-      env:
-        CONTAINER: ${IMG_NAME}
+    # - name: Update DockerHub Description
+    #   run: |
+    #     wget https://raw.githubusercontent.com/jrrombaldo/containers/master/update_dockerhub_desc.sh
+    #     chmod +x ./update_dockerhub_desc.sh
+    #     ./update_dockerhub_desc.sh
+    #   env:
+    #     CONTAINER: ${IMG_NAME}
 
 
 

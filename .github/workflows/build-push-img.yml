@@ -18,9 +18,8 @@ jobs:
         
     - name: Push to Docker Registry
       run: |
-        docker build -t $CONTAINER .
         docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-        docker push $CONTAINER
+        docker push $IMG_NAME
         docker logout
         
     - name: Update DockerHub Description
@@ -28,6 +27,8 @@ jobs:
         wget https://raw.githubusercontent.com/jrrombaldo/containers/master/update_dockerhub_desc.sh
         chmod +x ./update_dockerhub_desc.sh
         ./update_dockerhub_desc.sh
+      env:
+        CONTAINER: ${IMG_NAME}
 
 
 

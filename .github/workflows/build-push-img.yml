@@ -3,7 +3,7 @@ name: Build & Push
 on: [push]
 
 jobs:
-  build and Push:
+  build_Push:
     runs-on: ubuntu-latest
     
     env:

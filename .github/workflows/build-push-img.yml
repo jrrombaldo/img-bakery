@@ -16,17 +16,19 @@ jobs:
 
     - name: Build Docker Image
       run: |
-        export IMG_TAG="$IMG_NAME:$(date +'%Y%m%d-%H%M')"
-        docker build . --file Dockerfile --tag $IMG_TAG
+        echo '::set-env name=IMG_TAG::$(date +'%Y%m%d-%H%M')'
+        echo "this is the value [$IMG_TAG]"
+        # IMG_TAG="$(date +'%Y%m%d-%H%M')"
+        # docker build . --file Dockerfile --tag $IMG_NAME:$IMG_TAG
         
     - name: Push to Docker Registry
       run: |
-        docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-        docker tag $IMG_NAME:$IMG_TAG $IMG_NAME:latest
-        docker images
-        docker push $IMG_NAME
-        docker logout
-        rm -rf ~/.docker/config.json
+        # docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+        # docker tag $IMG_NAME:$IMG_TAG $IMG_NAME:latest
+        # docker images
+        # docker push $IMG_NAME
+        # docker logout
+        # rm -rf ~/.docker/config.json
         
     # - name: Update DockerHub Description
     #   run: |

@@ -6,17 +6,11 @@
     IFS=$'\n\t'
     set -x
 
-
-
-######### ensuring the basics
-
+    # make sure it runs as root
     if [[ $EUID -ne 0 ]]; then
         echo "This script must be run as root" 1>&2
         exit 1
     fi
-
-
-
     echo "Checking disk space."
     df -h
 
@@ -50,6 +44,7 @@
 
     /usr/local/bin/docker.sh
     /usr/local/bin/ohmyzsh.sh
+    /usr/local/bin/buonjour.sh
 
 
 ######### cleaning the image

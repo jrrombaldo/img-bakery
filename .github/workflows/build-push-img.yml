@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Build & Push 
 
 on: [push]
 
@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
     - uses: actions/checkout@v1
     - name: Build Docker Image
       run: |

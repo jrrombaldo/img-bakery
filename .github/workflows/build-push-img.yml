@@ -22,8 +22,10 @@ jobs:
       run: |
         docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
         docker tag $IMG_NAME $IMG_NAME:latest
+        docker images
         docker push $IMG_NAME
         docker logout
+        rm -rf ~/.docker/config.json
         
     # - name: Update DockerHub Description
     #   run: |

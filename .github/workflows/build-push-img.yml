@@ -22,7 +22,7 @@ jobs:
     - name: Push to Docker Registry
       run: |
         docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-        # docker push $IMG_NAME
+        docker push $IMG_NAME
         docker logout
         
     # - name: Update DockerHub Description

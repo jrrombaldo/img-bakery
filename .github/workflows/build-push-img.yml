@@ -16,7 +16,7 @@ jobs:
 
     - name: Build Docker Image
       run: |
-        export IMG_TAG="$IMG_NAME:$(date +'%Y%m%d-%H%M')""
+        export IMG_TAG="$IMG_NAME:$(date +'%Y%m%d-%H%M')"
         docker build . --file Dockerfile --tag $IMG_TAG
         
     - name: Push to Docker Registry

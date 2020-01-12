@@ -2,13 +2,15 @@ name: Build & Push
 
 on: [push]
 
-env:
-  IMG_NAME: "jrromb/img-bakery" 
-  IMG_TAG: $(date +'%Y%m%d-%H%M')
+
 
 jobs:
-  build:
+  build and Push:
     runs-on: ubuntu-latest
+    
+    env:
+      IMG_NAME: "jrromb/img-bakery" 
+      IMG_TAG: $(date +'%Y%m%d-%H%M')
 
     steps:
     - uses: actions/checkout@v1

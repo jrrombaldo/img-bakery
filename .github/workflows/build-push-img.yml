@@ -17,7 +17,7 @@ jobs:
     - name: Build Docker Image
       run: |
         IMG_TAG=$(date +'%Y%m%d-%H%M')
-        echo '::set-env name=IMG_TAG::${{IMG_TAG}}'
+        echo '::set-env name=IMG_TAG::${IMG_TAG}'
         # IMG_TAG="$(date +'%Y%m%d-%H%M')"
         # docker build . --file Dockerfile --tag $IMG_NAME:$IMG_TAG
         

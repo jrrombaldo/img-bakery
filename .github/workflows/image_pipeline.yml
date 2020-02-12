@@ -62,7 +62,7 @@ jobs:
             echo $PWD
 
 
-            docker run -d --rm \
+            docker run -i --rm \
                 -e IMG_URL="${IMG_LITE_URL}" \
                 -v ${TRANSIT}:/transit \
                 -v $RESULT}:/result \

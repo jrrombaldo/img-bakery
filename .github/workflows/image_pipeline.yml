@@ -39,70 +39,72 @@ jobs:
     #     #     CONTAINER: ${IMG_NAME}
    
    
-    build_image_lite:
+    build_image_CLI:
         name: create and release images
         runs-on: ubuntu-latest
         env:
-            VERSION: "RaspibianLITE"
             IMG_URL: "https://downloads.raspberrypi.org/raspbian_lite_latest"
 
         steps:
         - name: checkout code
           uses: actions/checkout@master
 
-        - name: create images              
+        - name: create CLI image              
           run: |
             ./build.sh
-            udo mv ./result/img-bakery.img.gz ./${VERSION}.img.gz  && sudo chmod +r ./${VERSION}.img.gz  
+            sudo mv ./result/img-bakery.img.gz ~/raspbian-cli.img.gz  && sudo chmod +r ~/raspbian-cli.img.gz
+            echo $PWD && cd ~/ && echo $PWD && ls -R
             
-        - name: upload lite image
+        - name: upload CLI image
           uses: actions/upload-artifact@v1
           with:
-            name: ${VERSION}
-            path: ./${VERSION}.img.gz
+            name: raspbian-cli
+            path: ~/raspbian-cli.img.gz
 
 
     build_image_GUI:
       name: create and release images
       runs-on: ubuntu-latest
       env:
-          VERSION: "RaspibianGUI"
+
           IMG_URL: "https://downloads.raspberrypi.org/raspbian_latest"
 
       steps:
       - name: checkout code
         uses: actions/checkout@master
 
-      - name: create images              
+      - name: create GUI image              
         run: |
           ./build.sh
-          sudo mv ./result/img-bakery.img.gz ./${VERSION}.img.gz  && sudo chmod +r ./${VERSION}.img.gz
+          sudo mv ./result/img-bakery.img.gz ./raspbian-gui.img.gz  && sudo chmod +r ./raspbian-gui.img.gz
+          echo $PWD && cd ../../ && echo $PWD && ls -R
           
-      - name: upload lite image
+      - name: upload GUI image
         uses: actions/upload-artifact@v1
         with:
-          name: ${VERSION}
-          path: ./${VERSION}.img.gz
+          name: raspbian-gui
+          path: ~/raspbian-gui.img.gz
 
 
     release_images:
       name: creating release for images
       runs-on: ubuntu-latest
-      needs: [build_image_GUI, build_image_lite]
+      needs: [build_image_GUI, build_image_CLI]
       
       steps:
-        - name: download lite image
+        - name: download CLI image
           uses: actions/download-artifact@v1
           with:
-            name: RaspibianLITE
+            name: raspbian-cli
 
-        - name: download full image
+        - name: download GUI image
           uses: actions/download-artifact@v1
           with:
-            name: RaspibianGUI
+            name: raspbian-gui
 
         - name: check files
           run: |
+            echo $PWD
             ls -R
 
         - name: create Release
@@ -115,23 +117,23 @@ jobs:
               draft: false
               prerelease: false
         
-        - name: upload lite image
+        - name: upload CLI image
           uses: actions/upload-release-asset@v1
           env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
               upload_url: ${{ steps.create_release.outputs.upload_url }}
-              asset_path: ./RaspibianLITE.img.gz
-              asset_name: raspbian-lite
+              asset_path: ./raspbian-cli.img.gz
+              asset_name: raspbian-cli
               asset_content_type: application/zip
 
-        - name: upload gui image
+        - name: upload GUI image
           uses: actions/upload-release-asset@v1
           env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
               upload_url: ${{ steps.create_release.outputs.upload_url }}
-              asset_path: ./RaspibianGUI.img.gz
+              asset_path: ./raspbian-gui.img.gz
               asset_name: raspbian-gui
               asset_content_type: application/zip
         

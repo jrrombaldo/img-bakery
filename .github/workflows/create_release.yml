@@ -19,21 +19,21 @@ jobs:
           mv ./result/rasp-custom.img.gz ./raspibian-LITE-${{ github.ref }}.img.gz
 
       - name: create Release
-          uses: actions/create-release@v1
-          env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-              tag_name: ${{ github.ref }}
-              release_name: Release ${{ github.ref }}
-              draft: false
-              prerelease: false
+        uses: actions/create-release@v1
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+            tag_name: ${{ github.ref }}
+            release_name: Release ${{ github.ref }}
+            draft: false
+            prerelease: false
       
       - name: upload lite image
-          uses: actions/upload-release-asset@v1
-          env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-              upload_url: ${{ steps.create_release.outputs.upload_url }}
-              asset_path: ./raspibian-LITE-${{ github.ref }}.img.gz
-              asset_name: raspibian-LITE-${{ github.ref }}.img.gz
-              asset_content_type: application/zip
+        uses: actions/upload-release-asset@v1
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+            upload_url: ${{ steps.create_release.outputs.upload_url }}
+            asset_path: ./raspibian-LITE-${{ github.ref }}.img.gz
+            asset_name: raspibian-LITE-${{ github.ref }}.img.gz
+            asset_content_type: application/zip

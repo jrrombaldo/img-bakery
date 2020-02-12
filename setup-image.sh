@@ -15,13 +15,6 @@ fi
 
 
 
-echo '
-search ant.amazon.com amazon.com
-nameserver 10.106.65.245
-nameserver 10.106.65.205
-nameserver 10.106.151.100
-nameserver 10.106.49.51
-' > /etc/resolv.conf                  
 
 ######### VARIABLES
     export HOST=${HOST:=rasp.local}

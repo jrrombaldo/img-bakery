@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # fail if any lines returns a non-zero status
  set -xuo pipefail
@@ -44,6 +44,7 @@
              rm -rf  "${MOUNT}" || true
          fi
          [[ -n "${LOOPDEV:-}" ]] && losetup --detach "${LOOPDEV}" || true
+         rm -rf ./result/${IMG_NAME} || true
          rm -rf ./result/${IMG_NAME}.bck || true
      }
      trap cleanup EXIT
@@ -51,10 +52,13 @@
 
 
  ######### Download and preparing image file
+ 
+    ORIGINAL="${IMG_NAME}-original.zip"
 
-    [[ ! -f "/result/${IMG_NAME}.zip" ]] && wget -O "/result/${IMG_NAME}.zip" "${IMG_URL}"
+    [[ ! -f "/result/${ORIGINAL}" ]] && wget -O "/result/${ORIGINAL}" "${IMG_URL}"
     (ls /result/*.img >> /dev/null 2>&1 && rm /result/*.img) || echo "no .img files to remove"
-    unzip -u "/result/${IMG_NAME}.zip" -d /result/
+    unzip -u "/result/${ORIGINAL}" -d /result/
+    # TODO caputre image name (and perhaps the version)
     mv "$(ls /result/*.img | head -n 1)" "/result/${IMG_NAME}"
 
 
@@ -112,7 +116,7 @@
  ######### SHRINK IMAG
 
      mv /result/${IMG_NAME} /result/${IMG_NAME}.bck
-     pishrink.sh -rz /result/${IMG_NAME}.bck /result/${IMG_NAME}
+     pishrink.sh -rz /result/${IMG_NAME}.bck "/result/${IMG_NAME}"
 
 
 

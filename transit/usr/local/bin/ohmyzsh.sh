@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-/usr/local/bin/strict.sh
-
 
 apt install zsh git -y
 sudo -H -u pi sh -c '

@@ -6,7 +6,7 @@ LABEL repo="https://github.com/jrrombaldo/img-bakery.git"
 
 
 ENV IMG_URL=https://downloads.raspberrypi.org/raspbian_lite_latest
-ENV IMG_NAME=img-bakery-result.img
+ENV IMG_NAME=img-bakery.img
 ENV MOUNT=/mnt/custom-img
 ENV INCREASE_BY=5G
 

@@ -53,7 +53,7 @@ jobs:
         - name: create images              
           run: |
             ./build.sh
-            sudo mv ./result/img-bakery.img.gz ./${VERSION}.img.gz    
+            udo mv ./result/img-bakery.img.gz ./${VERSION}.img.gz  && sudo chmod +r ./${VERSION}.img.gz  
             
         - name: upload lite image
           uses: actions/upload-artifact@v1
@@ -76,7 +76,7 @@ jobs:
       - name: create images              
         run: |
           ./build.sh
-          sudo mv ./result/img-bakery.img.gz ./${VERSION}.img.gz    
+          sudo mv ./result/img-bakery.img.gz ./${VERSION}.img.gz  && sudo chmod +r ./${VERSION}.img.gz
           
       - name: upload lite image
         uses: actions/upload-artifact@v1

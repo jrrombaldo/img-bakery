@@ -126,7 +126,7 @@ jobs:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
               upload_url: ${{ steps.create_release.outputs.upload_url }}
-              asset_path: ./raspbian-cli.img.gz
+              asset_path: ./raspbian-cli/raspbian-cli.img.gz
               asset_name: raspbian-cli
               asset_content_type: application/zip
 
@@ -136,7 +136,7 @@ jobs:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
               upload_url: ${{ steps.create_release.outputs.upload_url }}
-              asset_path: ./raspbian-gui.img.gz
+              asset_path: ./raspbian-gui/raspbian-gui.img.gz
               asset_name: raspbian-gui
               asset_content_type: application/zip
         

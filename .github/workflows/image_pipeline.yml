@@ -85,12 +85,6 @@ jobs:
           path: ./${VERSION}.img.gz
 
 
-
-
-
-
-
-
     release_images:
       name: creating release for images
       runs-on: ubuntu-latest
@@ -111,25 +105,35 @@ jobs:
           run: |
             ls -R
 
-        # - name: create Release
-        #   uses: actions/create-release@v1
-        #   env:
-        #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        #   with:
-        #       tag_name: ${{ github.ref }}
-        #       release_name: Release ${{ github.ref }}
-        #       draft: false
-        #       prerelease: false
+        - name: create Release
+          uses: actions/create-release@v1
+          env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+              tag_name: ${{ github.ref }}
+              release_name: Release ${{ github.ref }}
+              draft: false
+              prerelease: false
         
-        # - name: upload lite image
-        #   uses: actions/upload-release-asset@v1
-        #   env:
-        #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        #   with:
-        #       upload_url: ${{ steps.create_release.outputs.upload_url }}
-        #       asset_path: ./${LITE_IMAGE}
-        #       asset_name: .${LITE_IMAGE}
-        #       asset_content_type: application/zip
+        - name: upload lite image
+          uses: actions/upload-release-asset@v1
+          env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+              upload_url: ${{ steps.create_release.outputs.upload_url }}
+              asset_path: ./RaspibianLITE.img.gz
+              asset_name: raspbian-lite
+              asset_content_type: application/zip
+
+        - name: upload gui image
+          uses: actions/upload-release-asset@v1
+          env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+              upload_url: ${{ steps.create_release.outputs.upload_url }}
+              asset_path: ./RaspibianGUI.img.gz
+              asset_name: raspbian-gui
+              asset_content_type: application/zip
         
 
                 

@@ -61,14 +61,14 @@ jobs:
 
             docker run -d --rm \
                 -e IMG_URL="${IMG_LITE_URL}" \
-                -v ${{ TRANSIT }}:/transit \
-                -v ${{ RESULT }}:/result \
-                -v ${{ SCRIPT }}:/setup-image.sh \
+                -v ${TRANSIT}:/transit \
+                -v $RESULT}:/result \
+                -v ${SCRIPT}:/setup-image.sh \
                 -v /dev:/dev \
                 --privileged \
-                ${{IMG_NAME}}
+                ${IMG_NAME}
 
-            mv ./result/rasp-custom.img.gz ./${{ LITE_IMAGE }}
+            mv ./result/rasp-custom.img.gz ./${LITE_IMAGE}
 
         - name: create Release
           uses: actions/create-release@v1
@@ -86,8 +86,8 @@ jobs:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
               upload_url: ${{ steps.create_release.outputs.upload_url }}
-              asset_path: ./${{ LITE_IMAGE }}
-              asset_name: .${{ LITE_IMAGE }}
+              asset_path: ./${LITE_IMAGE}
+              asset_name: .${LITE_IMAGE}
               asset_content_type: application/zip
         
 

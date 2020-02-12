@@ -60,7 +60,7 @@ jobs:
             SCRIPT="$PWD/setup-image.sh"
 
             docker run -d --rm \
-                -e IMG_URL="${{ IMG_LITE_URL }}" \
+                -e IMG_URL="${IMG_LITE_URL}" \
                 -v ${{ TRANSIT }}:/transit \
                 -v ${{ RESULT }}:/result \
                 -v ${{ SCRIPT }}:/setup-image.sh \

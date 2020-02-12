@@ -18,7 +18,7 @@ jobs:
       run: |
         IMG_TAG=$(date +'%Y%m%d-%H%M')
         echo "::set-env name=IMG_TAG::$IMG_TAG"
-        cd ../docker
+        cd ./docker
         docker build . --file Dockerfile --tag $IMG_NAME:$IMG_TAG
         
     - name: Push to Docker Registry

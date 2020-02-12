@@ -42,7 +42,7 @@ jobs:
     release_image:
         name: create and release images
         runs-on: ubuntu-latest
-        needs: [docker_push]
+#         needs: [docker_push]
         env:
             IMG_NAME: "jrromb/img-bakery"
             IMG_LITE_URL: "https://downloads.raspberrypi.org/raspbian_lite_latest"

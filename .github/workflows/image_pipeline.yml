@@ -55,11 +55,12 @@ jobs:
 
         - name: create images              
           run: |
+            set -x
             RESULT="$PWD/result"
             TRANSIT="$PWD/transit"
             SCRIPT="$PWD/setup-image.sh"
             echo $PWD
-            cd img-bakery
+
 
             docker run -d --rm \
                 -e IMG_URL="${IMG_LITE_URL}" \

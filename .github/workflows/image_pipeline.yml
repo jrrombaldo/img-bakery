@@ -40,7 +40,7 @@ jobs:
    
    
     build_image_CLI:
-        name: create and release images
+        name: build CLI image
         runs-on: ubuntu-latest
         env:
             IMG_URL: "https://downloads.raspberrypi.org/raspbian_lite_latest"
@@ -63,7 +63,7 @@ jobs:
 
 
     build_image_GUI:
-      name: create and release images
+      name: build GUI image
       runs-on: ubuntu-latest
       env:
 
@@ -90,6 +90,8 @@ jobs:
       name: creating release for images
       runs-on: ubuntu-latest
       needs: [build_image_GUI, build_image_CLI]
+      strategy:
+        fail-fast: false
       
       steps:
         - name: download CLI image

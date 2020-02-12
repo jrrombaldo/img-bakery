@@ -14,21 +14,21 @@ jobs:
         - uses: actions/checkout@v1
 
         - name: Build Docker Image
-            run: |
-            IMG_TAG=$(date +'%Y%m%d-%H%M')
-            echo "::set-env name=IMG_TAG::$IMG_TAG"
-            cd ./docker
-            docker build . --file Dockerfile --tag $IMG_NAME:$IMG_TAG
+            run:|
+              IMG_TAG=$(date +'%Y%m%d-%H%M')
+              echo "::set-env name=IMG_TAG::$IMG_TAG"
+              cd ./docker
+              docker build . --file Dockerfile --tag $IMG_NAME:$IMG_TAG
             
         - name: Push to Docker Registry
-            run: |
-            echo "this is the value [$IMG_TAG]"
-            docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-            docker tag $IMG_NAME:$IMG_TAG $IMG_NAME:latest
-            docker images
-            docker push $IMG_NAME
-            docker logout
-            rm -rf ~/.docker/config.json
+            run:|
+              echo "this is the value [$IMG_TAG]"
+              docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+              docker tag $IMG_NAME:$IMG_TAG $IMG_NAME:latest
+              docker images
+              docker push $IMG_NAME
+              docker logout
+              rm -rf ~/.docker/config.json
             
         # - name: Update DockerHub Description
         #   run: |
@@ -51,10 +51,10 @@ jobs:
 
         steps:
         - name: checkout code
-            uses: actions/checkout@master
+          uses: actions/checkout@master
 
         - name: create images              
-            run: |
+          run: |
             RESULT="$PWD/result"
             TRANSIT="$PWD/transit"
             SCRIPT="$PWD/setup-image.sh"
@@ -71,24 +71,24 @@ jobs:
             mv ./result/rasp-custom.img.gz ./${{ LITE_IMAGE }}
 
         - name: create Release
-            uses: actions/create-release@v1
-            env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            with:
-                tag_name: ${{ github.ref }}
-                release_name: Release ${{ github.ref }}
-                draft: false
-                prerelease: false
+          uses: actions/create-release@v1
+          env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+              tag_name: ${{ github.ref }}
+              release_name: Release ${{ github.ref }}
+              draft: false
+              prerelease: false
         
         - name: upload lite image
-            uses: actions/upload-release-asset@v1
-            env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            with:
-                upload_url: ${{ steps.create_release.outputs.upload_url }}
-                asset_path: ./${{ LITE_IMAGE }}
-                asset_name: .${{ LITE_IMAGE }}
-                asset_content_type: application/zip
+          uses: actions/upload-release-asset@v1
+          env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+              upload_url: ${{ steps.create_release.outputs.upload_url }}
+              asset_path: ./${{ LITE_IMAGE }}
+              asset_name: .${{ LITE_IMAGE }}
+              asset_content_type: application/zip
         
 
                 

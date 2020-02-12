@@ -60,8 +60,7 @@ jobs:
             TRANSIT="$PWD/transit"
             SCRIPT="$PWD/setup-image.sh"
             echo $PWD
-
-
+            
             docker run -i --rm \
                 -e IMG_URL="${IMG_LITE_URL}" \
                 -v ${TRANSIT}:/transit \
@@ -72,6 +71,13 @@ jobs:
                 ${IMG_NAME}
                 # use https://help.github.com/en/actions/configuring-and-managing-workflows/persisting-workflow-data-using-artifacts
             #mv ./result/rasp-custom.img.gz ./${LITE_IMAGE}
+            ls ./result/*
+            
+        - name: upload lite image
+          uses: actions/upload-artifact@v1
+          with:
+            name: lite_image
+            path: result/${LITE_IMAGE}
 
 #         - name: create Release
 #           uses: actions/create-release@v1

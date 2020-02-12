@@ -6,7 +6,7 @@ IMG_NAME=${IMG_NAME:="jrromb/img-bakery"}
 IMG_URL=${IMG_URL:="https://downloads.raspberrypi.org/raspbian_lite_latest"}
 RESULT=${RESULT:="$PWD/result"}
 TRANSIT=${TRANSIT="$PWD/transit"}
-SCRIPT=${SCRIPT:"$PWD/setup-image.sh"}
+SCRIPT=${SCRIPT:="$PWD/setup-image.sh"}
 
 docker run -i --rm \
 -e IMG_URL="${IMG_URL}" \

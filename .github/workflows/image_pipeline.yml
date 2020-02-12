@@ -89,9 +89,10 @@ jobs:
 
 
     release_images:
-        name: creating release for images
-        needs: [build_images]
-
+      name: creating release for images
+      needs: [build_images]
+      
+      steps:
         - name: download lite image
           uses: actions/download-artifact@v1
           with:
@@ -104,7 +105,7 @@ jobs:
 
         - name: check files
           run: |
-          ls -R
+            ls -R
 
         # - name: create Release
         #   uses: actions/create-release@v1

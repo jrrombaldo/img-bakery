@@ -59,7 +59,7 @@ jobs:
             SCRIPT="$PWD/setup-image.sh"
             echo $PWD
             
-            apt install qemu-utils qemu-efi-aarch64 qemu-system-arm -y
+            sudo apt install qemu-user-static -y
             
             docker run -i --rm \
                 -e IMG_URL=""https://downloads.raspberrypi.org/${VERSION}"" \

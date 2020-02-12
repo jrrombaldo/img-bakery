@@ -3,82 +3,80 @@ name: images pipeline
 on: [push]
   
 jobs:
-    # docker_push:
-    #     runs-on: ubuntu-latest
-    #     env:
-    #         IMG_NAME: "jrromb/img-bakery" 
-    #         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-    #         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    docker_push:
+        runs-on: ubuntu-latest
+        env:
+            IMG_NAME: "jrromb/img-bakery" 
+            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
-    #     steps:
-    #     - uses: actions/checkout@v1
+        steps:
+        - uses: actions/checkout@v1
 
-    #     - name: Build Docker Image
-    #       run: |
-    #         IMG_TAG=$(date +'%Y%m%d-%H%M')
-    #         echo "::set-env name=IMG_TAG::$IMG_TAG"
-    #         cd ./docker
-    #         docker build . --file Dockerfile --tag $IMG_NAME:$IMG_TAG
+        - name: Build Docker Image
+          run: |
+            IMG_TAG=$(date +'%Y%m%d-%H%M')
+            echo "::set-env name=IMG_TAG::$IMG_TAG"
+            cd ./docker
+            docker build . --file Dockerfile --tag $IMG_NAME:$IMG_TAG
             
-    #     - name: Push to Docker Registry
-    #       run: |
-    #         echo "this is the value [$IMG_TAG]"
-    #         docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    #         docker tag $IMG_NAME:$IMG_TAG $IMG_NAME:latest
-    #         docker images
-    #         docker push $IMG_NAME
-    #         docker logout
-    #         rm -rf ~/.docker/config.json
+        - name: Push to Docker Registry
+          run: |
+            echo "this is the value [$IMG_TAG]"
+            docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+            docker tag $IMG_NAME:$IMG_TAG $IMG_NAME:latest
+            docker images
+            docker push $IMG_NAME
+            docker logout
+            rm -rf ~/.docker/config.json
             
-    #     # - name: Update DockerHub Description
-    #     #   run: |
-    #     #     wget https://raw.githubusercontent.com/jrrombaldo/containers/master/update_dockerhub_desc.sh
-    #     #     chmod +x ./update_dockerhub_desc.sh
-    #     #     ./update_dockerhub_desc.sh
-    #     #   env:
-    #     #     CONTAINER: ${IMG_NAME}
+        # - name: Update DockerHub Description
+        #   run: |
+        #     wget https://raw.githubusercontent.com/jrrombaldo/containers/master/update_dockerhub_desc.sh
+        #     chmod +x ./update_dockerhub_desc.sh
+        #     ./update_dockerhub_desc.sh
+        #   env:
+        #     CONTAINER: ${IMG_NAME}
    
    
     build_image_CLI:
-        name: build CLI image
-        runs-on: ubuntu-latest
-        env:
-            IMG_URL: "https://downloads.raspberrypi.org/raspbian_lite_latest"
+      name: build CLI image
+      runs-on: ubuntu-latest
+      needs: [docker_push]
 
-        steps:
-        - name: checkout code
-          uses: actions/checkout@master
+      env:
+          IMG_URL: "https://downloads.raspberrypi.org/raspbian_lite_latest"
 
-        - name: create CLI image              
-          run: |
-            ./build.sh
-            sudo mv ./result/img-bakery.img.gz ./raspbian-cli.img.gz  && sudo chmod +r ./raspbian-cli.img.gz
+      steps:
+      - uses: actions/checkout@v1
 
-            
-        - name: upload CLI image
-          uses: actions/upload-artifact@v1
-          with:
-            name: raspbian-cli
-            path: raspbian-cli.img.gz
+      - name: create CLI image              
+        run: |
+          ./build.sh
+          sudo mv ./result/img-bakery.img.gz ./raspbian-cli.img.gz  && sudo chmod +r ./raspbian-cli.img.gz
+
+      - name: upload CLI image
+        uses: actions/upload-artifact@v1
+        with:
+          name: raspbian-cli
+          path: raspbian-cli.img.gz
 
 
     build_image_GUI:
       name: build GUI image
       runs-on: ubuntu-latest
+      needs: [docker_push]
       env:
-
           IMG_URL: "https://downloads.raspberrypi.org/raspbian_latest"
-
+      
       steps:
-      - name: checkout code
-        uses: actions/checkout@master
+      - uses: actions/checkout@v1
 
       - name: create GUI image              
         run: |
           ./build.sh
           sudo mv ./result/img-bakery.img.gz ./raspbian-gui.img.gz  && sudo chmod +r ./raspbian-gui.img.gz
 
-          
       - name: upload GUI image
         uses: actions/upload-artifact@v1
         with:
@@ -104,12 +102,7 @@ jobs:
           with:
             name: raspbian-gui
 
-        - name: check files
-          run: |
-            echo $PWD
-            ls -R
-
-        - name: create Release
+        - name: create release
           uses: actions/create-release@v1
           id: create_release
           env:

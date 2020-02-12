@@ -76,7 +76,7 @@ jobs:
       - name: create images              
         run: |
           ./build.sh
-          mv ./result/rasp-custom.img.gz ./${VERSION}.img.gz    
+          mv ./result/img-bakery.img.gz ./${VERSION}.img.gz    
           
       - name: upload lite image
         uses: actions/upload-artifact@v1

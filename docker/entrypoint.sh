@@ -104,7 +104,7 @@
     done
 
      # qemu required to be built on travis-ci, without it does not recognise the setup.sh script.
-     cp /usr/bin/qemu-arm-static "${MOUNT}/usr/bin"
+     cp /usr/bin/qemu-arm-static "${MOUNT}/usr/bin/"
 
      cp "${MOUNT}/etc/ld.so.preload" "${MOUNT}/etc/_ld.so.preload"
      echo "" > "${MOUNT}/etc/ld.so.preload"

@@ -83,13 +83,9 @@ jobs:
             name: ${VERSION}
             path: ./result/rasp-custom.img.gz
 
-
-
-
-
-
     release_images:
       name: creating release for images
+      runs-on: ubuntu-latest
       needs: [build_images]
       
       steps:

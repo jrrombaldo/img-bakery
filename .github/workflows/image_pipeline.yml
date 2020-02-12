@@ -67,28 +67,28 @@ jobs:
                 -v /dev:/dev \
                 --privileged \
                 ${IMG_NAME}
+                # use https://help.github.com/en/actions/configuring-and-managing-workflows/persisting-workflow-data-using-artifacts
+            #mv ./result/rasp-custom.img.gz ./${LITE_IMAGE}
 
-            mv ./result/rasp-custom.img.gz ./${LITE_IMAGE}
-
-        - name: create Release
-          uses: actions/create-release@v1
-          env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-              tag_name: ${{ github.ref }}
-              release_name: Release ${{ github.ref }}
-              draft: false
-              prerelease: false
+#         - name: create Release
+#           uses: actions/create-release@v1
+#           env:
+#               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#           with:
+#               tag_name: ${{ github.ref }}
+#               release_name: Release ${{ github.ref }}
+#               draft: false
+#               prerelease: false
         
-        - name: upload lite image
-          uses: actions/upload-release-asset@v1
-          env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-              upload_url: ${{ steps.create_release.outputs.upload_url }}
-              asset_path: ./${LITE_IMAGE}
-              asset_name: .${LITE_IMAGE}
-              asset_content_type: application/zip
+#         - name: upload lite image
+#           uses: actions/upload-release-asset@v1
+#           env:
+#               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#           with:
+#               upload_url: ${{ steps.create_release.outputs.upload_url }}
+#               asset_path: ./${LITE_IMAGE}
+#               asset_name: .${LITE_IMAGE}
+#               asset_content_type: application/zip
         
 
                 

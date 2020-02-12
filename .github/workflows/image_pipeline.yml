@@ -1,0 +1,94 @@
+name: my pipeline
+
+on: [push]
+  
+jobs:
+    docker_push:
+        runs-on: ubuntu-latest
+        env:
+            IMG_NAME: "jrromb/img-bakery" 
+            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+        steps:
+        - uses: actions/checkout@v1
+
+        - name: Build Docker Image
+            run: |
+            IMG_TAG=$(date +'%Y%m%d-%H%M')
+            echo "::set-env name=IMG_TAG::$IMG_TAG"
+            cd ./docker
+            docker build . --file Dockerfile --tag $IMG_NAME:$IMG_TAG
+            
+        - name: Push to Docker Registry
+            run: |
+            echo "this is the value [$IMG_TAG]"
+            docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+            docker tag $IMG_NAME:$IMG_TAG $IMG_NAME:latest
+            docker images
+            docker push $IMG_NAME
+            docker logout
+            rm -rf ~/.docker/config.json
+            
+        # - name: Update DockerHub Description
+        #   run: |
+        #     wget https://raw.githubusercontent.com/jrrombaldo/containers/master/update_dockerhub_desc.sh
+        #     chmod +x ./update_dockerhub_desc.sh
+        #     ./update_dockerhub_desc.sh
+        #   env:
+        #     CONTAINER: ${IMG_NAME}
+   
+   
+    release_image:
+        name: create and release images
+        runs-on: ubuntu-latest
+        needs: [docker_push]
+        env:
+            IMG_NAME: "jrromb/img-bakery"
+            IMG_LITE_URL: "https://downloads.raspberrypi.org/raspbian_lite_latest"
+            IMG_FULL_URL: "https://downloads.raspberrypi.org/raspbian_lite_latest"
+            LITE_IMAGE: "raspibian-LITE-${{ github.ref }}.img.gz"
+
+        steps:
+        - name: checkout code
+            uses: actions/checkout@master
+
+        - name: create images              
+            run: |
+            RESULT="$PWD/result"
+            TRANSIT="$PWD/transit"
+            SCRIPT="$PWD/setup-image.sh"
+
+            docker run -d --rm \
+                -e IMG_URL="${{ IMG_LITE_URL }}" \
+                -v ${{ TRANSIT }}:/transit \
+                -v ${{ RESULT }}:/result \
+                -v ${{ SCRIPT }}:/setup-image.sh \
+                -v /dev:/dev \
+                --privileged \
+                ${{IMG_NAME}}
+
+            mv ./result/rasp-custom.img.gz ./${{ LITE_IMAGE }}
+
+        - name: create Release
+            uses: actions/create-release@v1
+            env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            with:
+                tag_name: ${{ github.ref }}
+                release_name: Release ${{ github.ref }}
+                draft: false
+                prerelease: false
+        
+        - name: upload lite image
+            uses: actions/upload-release-asset@v1
+            env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            with:
+                upload_url: ${{ steps.create_release.outputs.upload_url }}
+                asset_path: ./${{ LITE_IMAGE }}
+                asset_name: .${{ LITE_IMAGE }}
+                asset_content_type: application/zip
+        
+
+                

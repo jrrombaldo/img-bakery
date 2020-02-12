@@ -76,7 +76,7 @@
 
     parted --script "${LOOPDEV}" resizepart 2 100%
     parted --script "${LOOPDEV}" print
-    e2fsck -f "${LOOPDEV}p2"
+    e2fsck -yf "${LOOPDEV}p2"
     resize2fs "${LOOPDEV}p2"
     echo "Finished resizing disk image."
 

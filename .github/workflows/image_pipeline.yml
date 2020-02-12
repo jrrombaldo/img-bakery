@@ -3,40 +3,40 @@ name: my pipeline
 on: [push]
   
 jobs:
-    docker_push:
-        runs-on: ubuntu-latest
-        env:
-            IMG_NAME: "jrromb/img-bakery" 
-            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+#     docker_push:
+#         runs-on: ubuntu-latest
+#         env:
+#             IMG_NAME: "jrromb/img-bakery" 
+#             DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+#             DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
-        steps:
-        - uses: actions/checkout@v1
+#         steps:
+#         - uses: actions/checkout@v1
 
-        - name: Build Docker Image
-          run: |
-            IMG_TAG=$(date +'%Y%m%d-%H%M')
-            echo "::set-env name=IMG_TAG::$IMG_TAG"
-            cd ./docker
-            docker build . --file Dockerfile --tag $IMG_NAME:$IMG_TAG
+#         - name: Build Docker Image
+#           run: |
+#             IMG_TAG=$(date +'%Y%m%d-%H%M')
+#             echo "::set-env name=IMG_TAG::$IMG_TAG"
+#             cd ./docker
+#             docker build . --file Dockerfile --tag $IMG_NAME:$IMG_TAG
             
-        - name: Push to Docker Registry
-          run: |
-            echo "this is the value [$IMG_TAG]"
-            docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-            docker tag $IMG_NAME:$IMG_TAG $IMG_NAME:latest
-            docker images
-            docker push $IMG_NAME
-            docker logout
-            rm -rf ~/.docker/config.json
+#         - name: Push to Docker Registry
+#           run: |
+#             echo "this is the value [$IMG_TAG]"
+#             docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+#             docker tag $IMG_NAME:$IMG_TAG $IMG_NAME:latest
+#             docker images
+#             docker push $IMG_NAME
+#             docker logout
+#             rm -rf ~/.docker/config.json
             
-        # - name: Update DockerHub Description
-        #   run: |
-        #     wget https://raw.githubusercontent.com/jrrombaldo/containers/master/update_dockerhub_desc.sh
-        #     chmod +x ./update_dockerhub_desc.sh
-        #     ./update_dockerhub_desc.sh
-        #   env:
-        #     CONTAINER: ${IMG_NAME}
+#         # - name: Update DockerHub Description
+#         #   run: |
+#         #     wget https://raw.githubusercontent.com/jrrombaldo/containers/master/update_dockerhub_desc.sh
+#         #     chmod +x ./update_dockerhub_desc.sh
+#         #     ./update_dockerhub_desc.sh
+#         #   env:
+#         #     CONTAINER: ${IMG_NAME}
    
    
     release_image:
@@ -58,6 +58,8 @@ jobs:
             RESULT="$PWD/result"
             TRANSIT="$PWD/transit"
             SCRIPT="$PWD/setup-image.sh"
+            echo $PWD
+            cd img-bakery
 
             docker run -d --rm \
                 -e IMG_URL="${IMG_LITE_URL}" \

@@ -52,14 +52,14 @@ jobs:
         - name: create CLI image              
           run: |
             ./build.sh
-            sudo mv ./result/img-bakery.img.gz ~/raspbian-cli.img.gz  && sudo chmod +r ~/raspbian-cli.img.gz
-            echo $PWD && cd ~/ && echo $PWD && ls -R
+            sudo mv ./result/img-bakery.img.gz ./raspbian-cli.img.gz  && sudo chmod +r ./raspbian-cli.img.gz
+
             
         - name: upload CLI image
           uses: actions/upload-artifact@v1
           with:
             name: raspbian-cli
-            path: ~/raspbian-cli.img.gz
+            path: raspbian-cli.img.gz
 
 
     build_image_GUI:
@@ -77,13 +77,13 @@ jobs:
         run: |
           ./build.sh
           sudo mv ./result/img-bakery.img.gz ./raspbian-gui.img.gz  && sudo chmod +r ./raspbian-gui.img.gz
-          echo $PWD && cd ../../ && echo $PWD && ls -R
+
           
       - name: upload GUI image
         uses: actions/upload-artifact@v1
         with:
           name: raspbian-gui
-          path: ~/raspbian-gui.img.gz
+          path: raspbian-gui.img.gz
 
 
     release_images:

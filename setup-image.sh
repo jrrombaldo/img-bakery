@@ -27,29 +27,29 @@ fi
 
 
 ######### INSTALLING PACKAGES
-#     echo "Checking disk space."; df -h
-#     apt clean && apt update --allow-releaseinfo-change
-#     apt install -y \
-#         net-tools \
-#         hdparm \
-#         iotop \
-#         iftop \
-#         htop \
-#         tcpdump \
-#         ethtool \
-#         speedtest-cli \
-#         iperf \
-#         git \
-#         zsh \
-#         vim
+    echo "Checking disk space."; df -h
+    apt clean && apt update --allow-releaseinfo-change
+    apt install -y \
+        net-tools \
+        hdparm \
+        iotop \
+        iftop \
+        htop \
+        tcpdump \
+        ethtool \
+        speedtest-cli \
+        iperf \
+        git \
+        zsh \
+        vim
 
 
 
 
-# ######### ISNTALLING DOCKER
-#     curl -sSL https://get.docker.com | sh
-#     sudo usermod -a -G docker pi
-#     apt install docker-compose -y
+######### ISNTALLING DOCKER
+    curl -sSL https://get.docker.com | sh
+    sudo usermod -a -G docker pi
+    apt install docker-compose -y
 
 
 

@@ -112,6 +112,8 @@ jobs:
               release_name: Release ${{ github.ref }}
               draft: false
               prerelease: false
+          body: |
+            Montly release of customised raspbians images lite (CLI only) and complete (with GUI)
         
         - name: upload CLI image
           uses: actions/upload-release-asset@v1

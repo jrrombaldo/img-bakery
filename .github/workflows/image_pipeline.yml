@@ -52,7 +52,7 @@ jobs:
 
       - name: create CLI image              
         run: |
-          apt install qemu-user-static
+          sudo apt install qemu-user-static
           ./build.sh
           sudo mv ./result/img-bakery.img.gz ./raspbian-cli.img.gz  && sudo chmod +r ./raspbian-cli.img.gz
 
@@ -75,7 +75,7 @@ jobs:
 
       - name: create GUI image              
         run: |
-          apt install qemu-user-static
+          sudo apt install qemu-user-static
           ./build.sh
           sudo mv ./result/img-bakery.img.gz ./raspbian-gui.img.gz  && sudo chmod +r ./raspbian-gui.img.gz
 

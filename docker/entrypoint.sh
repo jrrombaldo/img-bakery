@@ -151,8 +151,8 @@
 
      mv /result/${IMG_NAME} /result/${IMG_NAME}.bck
     #  pishrink.sh -rz /result/${IMG_NAME}.bck "/result/${IMG_NAME}"
-     pishrink.sh -r /result/${IMG_NAME}.bck "/result/${IMG_NAME}.img"
-     zip /result/${IMG_NAME}.img.zip "/result/${IMG_NAME}.img"
+     pishrink.sh -r /result/${IMG_NAME}.bck /result/${IMG_NAME}.img
+     cd /result && zip ${IMG_NAME}.img.zip ${IMG_NAME}.img
 
 
     echo  "\n\nRESULT = $?\n\n"

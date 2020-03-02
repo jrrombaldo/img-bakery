@@ -54,13 +54,13 @@ jobs:
         run: |
           sudo apt clean && sudo apt update && sudo apt install qemu-user-static
           ./build.sh
-          sudo mv ./result/img-bakery.img.gz ./raspbian-cli.img.gz  && sudo chmod +r ./raspbian-cli.img.gz
+          sudo mv ./result/img-bakery.img.zip ./raspbian-cli.img.zip  && sudo chmod +r ./raspbian-cli.img.zip
 
       - name: upload CLI image
         uses: actions/upload-artifact@v1
         with:
           name: raspbian-cli
-          path: raspbian-cli.img.gz
+          path: raspbian-cli.img.zip
 
 
     build_image_GUI:
@@ -77,13 +77,13 @@ jobs:
         run: |
           sudo apt clean && sudo apt update && sudo apt install qemu-user-static
           ./build.sh
-          sudo mv ./result/img-bakery.img.gz ./raspbian-gui.img.gz  && sudo chmod +r ./raspbian-gui.img.gz
+          sudo mv ./result/img-bakery.img.zip ./raspbian-gui.img.zip  && sudo chmod +r ./raspbian-gui.img.zip
 
       - name: upload GUI image
         uses: actions/upload-artifact@v1
         with:
           name: raspbian-gui
-          path: raspbian-gui.img.gz
+          path: raspbian-gui.img.zip
 
 
     release_images:
@@ -123,8 +123,8 @@ jobs:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
               upload_url: ${{ steps.create_release.outputs.upload_url }}
-              asset_path: ./raspbian-cli/raspbian-cli.img.gz
-              asset_name: raspbian-cli.img.gz
+              asset_path: ./raspbian-cli/raspbian-cli.img.zip
+              asset_name: raspbian-cli.img.zip
               asset_content_type: application/zip
 
         - name: upload GUI image
@@ -133,8 +133,8 @@ jobs:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
               upload_url: ${{ steps.create_release.outputs.upload_url }}
-              asset_path: ./raspbian-gui/raspbian-gui.img.gz
-              asset_name: raspbian-gui.img.gz
+              asset_path: ./raspbian-gui/raspbian-gui.img.zip
+              asset_name: raspbian-gui.img.zip
               asset_content_type: application/zip
         
 

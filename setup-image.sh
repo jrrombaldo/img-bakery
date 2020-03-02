@@ -25,6 +25,13 @@ fi
     chmod 666 /dev/null
 
 
+######### HEADLESS INSTALL 
+    touch /boot/ssh
+    echo "pi:$PI_PWD" | chpasswd
+    echo "Setting hostname."
+    echo "${HOST}" > /etc/hostname
+
+
 
 ######### INSTALLING PACKAGES
     echo "Checking disk space."; df -h
@@ -50,14 +57,6 @@ fi
     curl -sSL https://get.docker.com | sh
     sudo usermod -a -G docker pi
     apt install docker-compose -y
-
-
-
-######### HEADLESS INSTALL 
-    touch /boot/ssh
-    echo "pi:$PI_PWD" | chpasswd
-    echo "Setting hostname."
-    echo "${HOST}" > /etc/hostname
 
 
 

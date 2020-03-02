@@ -26,6 +26,8 @@
          exit 3
      fi
 
+     export ORIGINAL="original-${IMG_NAME}"
+
 
  ######### CLEAN UP BITS
 
@@ -44,8 +46,9 @@
              rm -rf  "${MOUNT}" || true
          fi
          [[ -n "${LOOPDEV:-}" ]] && losetup --detach "${LOOPDEV}" || true
-         rm -rf ./result/${IMG_NAME} || true
-         rm -rf ./result/${IMG_NAME}.bck || true
+        #  rm -rf ./result/${IMG_NAME} || true
+        #  rm -rf ./result/${IMG_NAME}.bck || true
+        ls -1 /result | egrep -v "^(original-${IMG_NAME}|${IMG_NAME}.img.zip)$" | xargs -I {} rm -r ./result/{} || true
      }
      trap cleanup EXIT
 
@@ -53,13 +56,44 @@
 
  ######### Download and preparing image file
  
-    ORIGINAL="${IMG_NAME}-original.zip"
-
+    
     [[ ! -f "/result/${ORIGINAL}" ]] && wget -O "/result/${ORIGINAL}" "${IMG_URL}"
-    (ls /result/*.img >> /dev/null 2>&1 && rm /result/*.img) || echo "no .img files to remove"
-    unzip -u "/result/${ORIGINAL}" -d /result/
+
+    if [ $(file "/result/${ORIGINAL}" | grep -c "Zip archive data") -eq 1 ]
+    then 
+        echo "compressed with ZIP";
+        unzip -u "/result/${ORIGINAL}" -d /result/
+
+    elif [ $(file "/result/${ORIGINAL}" | grep -c "gzip compressed data") -eq 1 ]
+    then 
+        echo "compressed with GZ";
+        gunzip --decompress --keep --stdout "/result/${ORIGINAL}" > "/result/${IMG_NAME}"
+
+        # check if it was tar.gz
+        if [ $(file "/result/${IMG_NAME}" | grep -c "POSIX tar archive") -eq 1 ]
+        then
+            tar -vxf /result/${IMG_NAME}
+            # TODO need to investigate how to check the output
+        fi
+    elif [ $(file "/result/${ORIGINAL}" | grep -c "POSIX tar archive") -eq 1 ]
+    then 
+        tar -vxf /result/${IMG_NAME}
+        # TODO need to investigate how to check the output
+    fi
+
     # TODO caputre image name (and perhaps the version)
-    mv "$(ls /result/*.img | head -n 1)" "/result/${IMG_NAME}"
+    mv "$(ls /result/*.img | head -n 1)" "/result/${IMG_NAME}" || true # they might be the same
+
+
+    if [ $(file "/result/${IMG_NAME}" | grep -c "DOS/MBR boot sector") -eq 1 ]
+    then 
+        echo "/result/${IMG_NAME} is .IMG, happy days ... "
+    else
+        echo "/result/${IMG_NAME} is not an IMG, need to adjust the script  "
+        file "/result/${IMG_NAME}"
+        exit 1
+    fi
+   
 
 
  ######### PREPARING PARTITION
@@ -116,9 +150,12 @@
  ######### SHRINK IMAG
 
      mv /result/${IMG_NAME} /result/${IMG_NAME}.bck
-     pishrink.sh -rz /result/${IMG_NAME}.bck "/result/${IMG_NAME}"
+    #  pishrink.sh -rz /result/${IMG_NAME}.bck "/result/${IMG_NAME}"
+     pishrink.sh -r /result/${IMG_NAME}.bck "/result/${IMG_NAME}.img"
+     zip /result/${IMG_NAME}.img.zip "/result/${IMG_NAME}.img"
 
 
+    echo  "\n\nRESULT = $?\n\n"
 
 
 

@@ -13,7 +13,7 @@ ENV INCREASE_BY=5G
 
 RUN \
     apt clean  && apt update \
-    && apt install qemu qemu-user-static binfmt-support dosfstools parted wget zip udev grep file -y \
+    && apt install qemu qemu-user-static binfmt-support dosfstools parted wget zip udev grep file envsubst -y \
     &&  wget https://raw.githubusercontent.com/Drewsif/PiShrink/master/pishrink.sh --output-document=/usr/local/bin/pishrink.sh
 
 COPY entrypoint.sh /usr/local/bin/

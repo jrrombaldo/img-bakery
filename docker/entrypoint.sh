@@ -48,7 +48,7 @@
          [[ -n "${LOOPDEV:-}" ]] && losetup --detach "${LOOPDEV}" || true
         #  rm -rf ./result/${IMG_NAME} || true
         #  rm -rf ./result/${IMG_NAME}.bck || true
-        ls -1 /result | egrep -v "^(original-${IMG_NAME}|${IMG_NAME}.img.zip)$" | xargs -I {} rm -r ./result/{} || true
+        ls -1 /result | egrep -v "^(original-${IMG_NAME}|${IMG_NAME}.img.zip)$" | xargs -I {} rm -r /result/{} || true
      }
      trap cleanup EXIT
 

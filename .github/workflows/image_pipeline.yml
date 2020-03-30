@@ -1,12 +1,12 @@
 name: images pipeline
 
 on: [push]
-  
+
 jobs:
     docker_push:
         runs-on: ubuntu-latest
         env:
-            IMG_NAME: "jrromb/img-bakery" 
+            IMG_NAME: "jrromb/img-bakery"
             DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
             DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
@@ -19,7 +19,7 @@ jobs:
             echo "::set-env name=IMG_TAG::$IMG_TAG"
             cd ./docker
             docker build . --file Dockerfile --tag $IMG_NAME:$IMG_TAG
-            
+
         - name: Push to Docker Registry
           run: |
             echo "this is the value [$IMG_TAG]"
@@ -29,7 +29,7 @@ jobs:
             docker push $IMG_NAME
             docker logout
             rm -rf ~/.docker/config.json
-            
+
         # - name: Update DockerHub Description
         #   run: |
         #     wget https://raw.githubusercontent.com/jrrombaldo/containers/master/update_dockerhub_desc.sh
@@ -37,8 +37,8 @@ jobs:
         #     ./update_dockerhub_desc.sh
         #   env:
         #     CONTAINER: ${IMG_NAME}
-   
-   
+
+
     build_image_CLI:
       name: build CLI image
       runs-on: ubuntu-latest
@@ -50,11 +50,11 @@ jobs:
       steps:
       - uses: actions/checkout@v1
 
-      - name: create CLI image              
+      - name: create CLI image
         run: |
           sudo apt clean && sudo apt update && sudo apt install qemu-user-static
           ./build.sh
-          sudo mv ./result/img-bakery.img.zip ./raspbian-cli.img.zip  && sudo chmod +r ./raspbian-cli.img.zip
+          sudo mv ./result/baked-*.img.zip ./raspbian-cli.img.zip  && sudo chmod +r ./raspbian-cli.img.zip
 
       - name: upload CLI image
         uses: actions/upload-artifact@v1
@@ -69,15 +69,15 @@ jobs:
       needs: [docker_push]
       env:
           IMG_URL: "https://downloads.raspberrypi.org/raspbian_latest"
-      
+
       steps:
       - uses: actions/checkout@v1
 
-      - name: create GUI image              
+      - name: create GUI image
         run: |
           sudo apt clean && sudo apt update && sudo apt install qemu-user-static
           ./build.sh
-          sudo mv ./result/img-bakery.img.zip ./raspbian-gui.img.zip  && sudo chmod +r ./raspbian-gui.img.zip
+          sudo mv ./result/baked-*.img.zip ./raspbian-gui.img.zip  && sudo chmod +r ./raspbian-gui.img.zip
 
       - name: upload GUI image
         uses: actions/upload-artifact@v1
@@ -92,7 +92,7 @@ jobs:
       needs: [build_image_GUI, build_image_CLI]
       strategy:
         fail-fast: false
-      
+
       steps:
         - name: download CLI image
           uses: actions/download-artifact@v1
@@ -116,7 +116,7 @@ jobs:
               prerelease: false
               body: |
                 Montly release of customised raspbians images lite (CLI only) and complete (with GUI)
-        
+
         - name: upload CLI image
           uses: actions/upload-release-asset@v1
           env:
@@ -136,6 +136,3 @@ jobs:
               asset_path: ./raspbian-gui/raspbian-gui.img.zip
               asset_name: raspbian-gui.img.zip
               asset_content_type: application/zip
-        
-
-                

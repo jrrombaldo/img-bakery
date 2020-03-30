@@ -26,7 +26,9 @@
          exit 3
      fi
 
-     export ORIGINAL="original-${IMG_NAME}"
+     # export ORIGINAL="original-${IMG_NAME}"
+     export ORIGINAL=$(basename "${IMG_URL}")
+     export IMG_NAME="baked-${ORIGINAL}"
 
 
  ######### CLEAN UP BITS
@@ -46,26 +48,34 @@
              rm -rf  "${MOUNT}" || true
          fi
          [[ -n "${LOOPDEV:-}" ]] && losetup --detach "${LOOPDEV}" || true
-        #  rm -rf ./result/${IMG_NAME} || true
-        #  rm -rf ./result/${IMG_NAME}.bck || true
-        ls -1 /result | egrep -v "^(original-${IMG_NAME}|${IMG_NAME}.img.zip)$" | xargs -I {} rm -r /result/{} || true
+         # rm -rf ./result/${IMG_NAME} || true
+         rm -rf /result/${IMG_NAME}.bck || true
+        # ls -1 /result | egrep -v "^(${ORIGINAL}|${IMG_NAME}.img.zip)$" | xargs -I {} rm -r /result/{} || true
+        # ls -1 /result/${IMG_NAME}.* | egrep -v "^/result/(${ORIGINAL}|${IMG_NAME}.img.zip)$" | xargs -I {} rm -r {} || true
      }
      trap cleanup EXIT
 
 
 
  ######### Download and preparing image file
- 
-    
-    [[ ! -f "/result/${ORIGINAL}" ]] && wget -O "/result/${ORIGINAL}" "${IMG_URL}"
+
+
+    [[ ! -f "/result/${ORIGINAL}" ]] && \
+      wget -nv --show-progress --progress=bar:force:noscroll \
+      -O "/result/${ORIGINAL}" "${IMG_URL}"
 
     if [ $(file "/result/${ORIGINAL}" | grep -c "Zip archive data") -eq 1 ]
-    then 
+    then
         echo "compressed with ZIP";
         unzip -u "/result/${ORIGINAL}" -d /result/
 
+    elif [ $(file "/result/${ORIGINAL}" | grep -c "XZ compressed data") -eq 1 ]
+    then
+        echo "compressed with XZ";
+        xz -dc < "/result/${ORIGINAL}" > "/result/${IMG_NAME}"
+
     elif [ $(file "/result/${ORIGINAL}" | grep -c "gzip compressed data") -eq 1 ]
-    then 
+    then
         echo "compressed with GZ";
         gunzip --decompress --keep --stdout "/result/${ORIGINAL}" > "/result/${IMG_NAME}"
 
@@ -76,7 +86,7 @@
             # TODO need to investigate how to check the output
         fi
     elif [ $(file "/result/${ORIGINAL}" | grep -c "POSIX tar archive") -eq 1 ]
-    then 
+    then
         tar -vxf /result/${IMG_NAME}
         # TODO need to investigate how to check the output
     fi
@@ -86,14 +96,14 @@
 
 
     if [ $(file "/result/${IMG_NAME}" | grep -c "DOS/MBR boot sector") -eq 1 ]
-    then 
+    then
         echo "/result/${IMG_NAME} is .IMG, happy days ... "
     else
         echo "/result/${IMG_NAME} is not an IMG, need to adjust the script  "
         file "/result/${IMG_NAME}"
         exit 1
     fi
-   
+
 
 
  ######### PREPARING PARTITION
@@ -140,11 +150,14 @@
      # qemu required to be built on travis-ci, without it does not recognise the setup.sh script.
      cp /usr/bin/qemu-arm-static "${MOUNT}/usr/bin/"
 
-     cp "${MOUNT}/etc/ld.so.preload" "${MOUNT}/etc/_ld.so.preload"
+
+     find ${MOUNT}/etc/ -name ld.so.preload | xargs -I {} mv {} {}.backup
      echo "" > "${MOUNT}/etc/ld.so.preload"
+
      install -Dm755 "/setup-image.sh"  "${MOUNT}/setup-image.sh"
      chroot "${MOUNT}" /setup-image.sh
-     mv "${MOUNT}/etc/_ld.so.preload" "${MOUNT}/etc/ld.so.preload"
+
+     find ${MOUNT}/etc/ -name ld.so.preload.backup | xargs -I {} mv {} ${MOUNT}/etc/ld.so.preload
 
 
  ######### SHRINK IMAG

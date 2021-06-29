@@ -39,8 +39,8 @@ jobs:
         #     CONTAINER: ${IMG_NAME}
 
 
-    build_image_CLI:
-      name: build CLI image
+    build_raspbian:
+      name: build raspbian image
       runs-on: ubuntu-latest
       needs: [docker_push]
 
@@ -50,59 +50,59 @@ jobs:
       steps:
       - uses: actions/checkout@v1
 
-      - name: create CLI image
+      - name: create raspbian image
         run: |
           sudo apt clean && sudo apt update && sudo apt install qemu-user-static
           ./build.sh
-          sudo mv ./result/baked-*.img.zip ./raspbian-cli.img.zip  && sudo chmod +r ./raspbian-cli.img.zip
+          sudo mv ./result/baked-*.img.zip ./raspbian.img.zip  && sudo chmod +r ./raspbian.img.zip
 
-      - name: upload CLI image
+      - name: upload raspbian image
         uses: actions/upload-artifact@v1
         with:
-          name: raspbian-cli
-          path: raspbian-cli.img.zip
+          name: raspbian
+          path: raspbian.img.zip
 
 
-    build_image_GUI:
-      name: build GUI image
+    build_ubuntu:
+      name: build ubuntu image
       runs-on: ubuntu-latest
       needs: [docker_push]
       env:
-          IMG_URL: "https://downloads.raspberrypi.org/raspbian_latest"
+          IMG_URL: "https://cdimage.ubuntu.com/releases/20.04.2/release/ubuntu-20.04.2-preinstalled-server-arm64+raspi.img.xz"
 
       steps:
       - uses: actions/checkout@v1
 
-      - name: create GUI image
+      - name: create ubuntu image
         run: |
           sudo apt clean && sudo apt update && sudo apt install qemu-user-static
           ./build.sh
-          sudo mv ./result/baked-*.img.zip ./raspbian-gui.img.zip  && sudo chmod +r ./raspbian-gui.img.zip
+          sudo mv ./result/baked-*.img.zip ./ubuntu.img.zip  && sudo chmod +r ./ubuntu.img.zip
 
-      - name: upload GUI image
+      - name: upload ubuntu image
         uses: actions/upload-artifact@v1
         with:
-          name: raspbian-gui
-          path: raspbian-gui.img.zip
+          name: ubuntu
+          path: ubuntu.img.zip
 
 
     release_images:
       name: creating release for images
       runs-on: ubuntu-latest
-      needs: [build_image_GUI, build_image_CLI]
+      needs: [build_ubuntu, build_raspbian]
       strategy:
         fail-fast: false
 
       steps:
-        - name: download CLI image
+        - name: download raspbian image
           uses: actions/download-artifact@v1
           with:
-            name: raspbian-cli
+            name: raspbian
 
-        - name: download GUI image
+        - name: download ubuntu image
           uses: actions/download-artifact@v1
           with:
-            name: raspbian-gui
+            name: ubuntu
 
         - name: create release
           uses: actions/create-release@v1
@@ -115,24 +115,24 @@ jobs:
               draft: false
               prerelease: false
               body: |
-                Montly release of customised raspbians images lite (CLI only) and complete (with GUI)
+                Montly release of customised raspbian and ubuntu images
 
-        - name: upload CLI image
+        - name: upload raspbian image
           uses: actions/upload-release-asset@v1
           env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
               upload_url: ${{ steps.create_release.outputs.upload_url }}
-              asset_path: ./raspbian-cli/raspbian-cli.img.zip
-              asset_name: raspbian-cli.img.zip
+              asset_path: ./raspbian/raspbian.img.zip
+              asset_name: raspbian.img.zip
               asset_content_type: application/zip
 
-        - name: upload GUI image
+        - name: upload ubuntu image
           uses: actions/upload-release-asset@v1
           env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
               upload_url: ${{ steps.create_release.outputs.upload_url }}
-              asset_path: ./raspbian-gui/raspbian-gui.img.zip
-              asset_name: raspbian-gui.img.zip
+              asset_path: ./ubuntu/ubuntu.img.zip
+              asset_name: ubuntu.img.zip
               asset_content_type: application/zip

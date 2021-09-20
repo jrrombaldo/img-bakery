@@ -13,16 +13,11 @@ jobs:
         steps:
         - uses: actions/checkout@v1
 
-        - name: Build Docker Image
+        - name: Build and Push Docker Image
           run: |
             IMG_TAG=$(date +'%Y%m%d-%H%M')
-            echo "::set-env name=IMG_TAG::$IMG_TAG"
             cd ./docker
             docker build . --file Dockerfile --tag $IMG_NAME:$IMG_TAG
-
-        - name: Push to Docker Registry
-          run: |
-            echo "this is the value [$IMG_TAG]"
             docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
             docker tag $IMG_NAME:$IMG_TAG $IMG_NAME:latest
             docker images

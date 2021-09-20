@@ -17,7 +17,7 @@ SCRIPT=${SCRIPT:="$PWD/setup-image.sh"}
 # to run only on build
 docker pull ${IMG_NAME}
 
-docker run -it --rm \
+docker run -d --rm \
 -e IMG_URL="${IMG_URL}" \
 -v ${TRANSIT}:/transit \
 -v ${RESULT}:/result \

@@ -90,12 +90,12 @@ jobs:
 
       steps:
         - name: download raspbian image
-          uses: actions/download-artifact@v1
+          uses: actions/download-artifact@v4.1.7
           with:
             name: raspbian
 
         - name: download ubuntu image
-          uses: actions/download-artifact@v1
+          uses: actions/download-artifact@v4.1.7
           with:
             name: ubuntu
 
